@@ -1,0 +1,12 @@
+@charset "ISO-8859-1";
+
+/* Main containers */
+body {
+  padding: 0;
+  margin: 0;
+  font: 90% tahoma, verdana, sans-serif;
+  background-color: gainsboro;
+  color: #333;
+  text-align: center;
+  line-height: 1.6em;
+}
