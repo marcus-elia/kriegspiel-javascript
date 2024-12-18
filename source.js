@@ -8,18 +8,18 @@ const ICON_WIDTH = 56;
 
 // Global game variables
 let pieces_ = [];
-let selectedSquare_ = null;
+let selectedSquare_ = [0, 7];
 
 function hideIntroduction() {
   document.getElementById("homeScreen").style.display = "none";
   document.getElementById("canvas").style.display = "inline";
 }
 
-function drawChessBoard(ctx, canvas) {
-  drawSquares(ctx, canvas);
+function drawChessBoard(ctx) {
+  drawSquares(ctx);
 }
 
-function drawSquares(ctx, canvas) {
+function drawSquares(ctx) {
   for (let i = 0; i < NUM_SQUARES; i++) {
     for (let j = 0; j < NUM_SQUARES; j++) {
       ctx.fillStyle = (i + j) % 2 == 0 ? "white" : "black";
@@ -28,12 +28,20 @@ function drawSquares(ctx, canvas) {
   }
 }
 
+function drawHighlightedSquare(i, j, ctx) {
+  ctx.fillStyle = "rgba(0, 222, 222, 0.5)";
+  ctx.fillRect(i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+}
+
 function getMousePosition(canvas, event) {
-  let rect = canvas.getBoundingClientRect();
-  mouseX = event.clientX - rect.left;
-  mouseY = event.clientY - rect.top;
-  mouseClickThisFrame = true;
-  //console.log("Coordinate x: " + mouseX, "Coordinate y: " + mouseY);
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = event.clientX - rect.left;
+  const mouseY = event.clientY - rect.top;
+  const i = Math.floor(mouseX / SQUARE_SIZE);
+  const j = Math.floor(mouseY / SQUARE_SIZE);
+  if (0 <= i && i < 8 && 0 <= j && j < 8) {
+    selectedSquare_ = [i, j];
+  }
 }
 
 function coordsToSquareCenter(i, j) {
@@ -95,10 +103,14 @@ function startGame() {
     // Clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    drawChessBoard(ctx, canvas);
+    drawChessBoard(ctx);
 
     for (let i = 0; i < pieces_.length; i++) {
       pieces_[i].draw();
+    }
+
+    if (selectedSquare_ != null) {
+      drawHighlightedSquare(selectedSquare_[0], selectedSquare_[1], ctx);
     }
 
     // Request the next frame
